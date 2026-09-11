@@ -322,9 +322,9 @@
             const saved = readCoordinates();
             if (latitude && longitude && typeof window.L !== "undefined") {
                 map = L.map("map").setView(saved || [19.5844, -98.5669], saved ? 16 : 14);
-                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
                     maxZoom: 19,
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO'
                 }).addTo(map).on("tileerror", () => {
                     setStatus("No se pudo cargar parte del mapa. Revisa tu conexión antes de elegir el domicilio.", "error");
                 });

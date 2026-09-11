@@ -11,10 +11,10 @@ class PedidoForm(forms.ModelForm):
         fields = ['nombre_comprador', 'calle', 'numero_exterior', 'colonia', 'codigo_postal', 'referencias', 'metodo_pago', 'latitud', 'longitud']
         
         widgets = {
-            'nombre_comprador': forms.TextInput(attrs={'placeholder': 'Ej. Luis Hernández'}),
-            'calle': forms.TextInput(attrs={'placeholder': 'Ej. Morelos'}),
-            'numero_exterior': forms.TextInput(attrs={'placeholder': 'Ej. 123'}),
-            'colonia': forms.TextInput(attrs={'placeholder': 'Ej. Centro'}),
-            'codigo_postal': forms.TextInput(attrs={'placeholder': 'Ej. 90200'}),
+            'nombre_comprador': forms.TextInput(attrs={'class': 'tu-clase'}),
+            'calle': forms.TextInput(attrs={'class': 'tu-clase'}),
+            'numero_exterior': forms.TextInput(attrs={'class': 'tu-clase'}),
+            'colonia': forms.TextInput(attrs={'class': 'tu-clase'}),
+            'codigo_postal': forms.TextInput(attrs={'class': 'tu-clase'}),
             'referencias': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Fachada blanca, portón negro...'}),
         }

@@ -168,7 +168,7 @@ def pedido_exitoso(request, pedido_id):
         mensaje += f"\n*Ubicación Exacta:* https://maps.google.com/?q={pedido.latitud},{pedido.longitud}\n"
     
     mensaje_codificado = urllib.parse.quote(mensaje)
-    numero_whatsapp = "527491028789"  # <- Pon tu número aquí
+    numero_whatsapp = "525611273777"  # <- Pon tu número aquí
     url_whatsapp = f"https://wa.me/{numero_whatsapp}?text={mensaje_codificado}"
     
     return render(request, 'tienda/pedido_exitoso.html', {
