@@ -11,6 +11,17 @@ import datetime
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def redireccion_login(request):
+    # Si el usuario es administrador, lo mandamos al panel
+    if request.user.is_staff or request.user.is_superuser:
+        return redirect(catalogo)  # Ej: 'dashboard'
+    # Si es un cliente normal, lo mandamos a su perfil
+    else:
+        return redirect(panel_administrador)  # Ej: 'mi_cuenta'
 
 
 def catalogo(request):

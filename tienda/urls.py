@@ -13,4 +13,5 @@ urlpatterns = [
     path('panel', views.panel_administrador, name='panel_administrador'),
     path('panel/login/', views.login_admin, name='login_admin'),
     path('panel/logout/', views.logout_admin, name='logout_admin'),
+    path('redireccion/', views.redireccion_login, name='redireccion_login'),
 ]   

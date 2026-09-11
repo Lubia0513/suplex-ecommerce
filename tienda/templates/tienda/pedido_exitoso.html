@@ -54,13 +54,30 @@
             <div class="order-number">Orden #000{{ pedido.id }}</div>
             
             {% if pedido.metodo_pago == 'Transferencia' %}
-            <div class="transfer-info">
-                <strong>🏦 Datos para Transferencia (SPEI)</strong><br>
-                Banco: BBVA (O tu banco)<br>
-                CLABE: 012345678901234567<br>
-                Concepto: Pedido {{ pedido.id }}<br><br>
-                <em>* Por favor, transfiere el monto exacto y envíanos el comprobante por WhatsApp.</em>
+            <div class="tarjeta-bancaria">
+                <h3>Datos para Transferencia Electrónica</h3>
+                
+                <!-- Monto sin botón de copiar, pero resaltado -->
+                <p class="monto-destacado">
+                    Monto a pagar: <strong>$ {{ pedido.total }} MXN</strong>
+                </p>
+
+                <!-- Beneficiario con botón -->
+                <p>
+                    Beneficiario: <span id="beneficiario">Luis Manuel Hernandez Cruz</span>
+                    <button type="button" onclick="copiarAlPortapapeles('beneficiario')" class="btn-copiar">Copiar nombre</button>
+                </p>
+
+                <!-- CLABE con botón -->
+                <p>
+                    CLABE Interbancaria: <span id="clabe">123456789012345678</span>
+                    <button type="button" onclick="copiarAlPortapapeles('clabe')" class="btn-copiar">Copiar CLABE</button>
+                </p>
             </div>
+
+
+
+           
             {% endif %}
             
             <div class="details-box">
@@ -99,6 +116,19 @@
                 window.open("{{ url_whatsapp|safe }}", "_blank");
             }, 1500); 
         };
+
+        function copiarAlPortapapeles(idElemento) {
+        // Obtenemos el texto del elemento
+        var texto = document.getElementById(idElemento).innerText;
+        
+        // Lo mandamos al portapapeles del dispositivo
+        navigator.clipboard.writeText(texto).then(function() {
+            // Opcional: Cambiar el texto del botón temporalmente para que el usuario sepa que funcionó
+            alert("¡Copiado exitosamente: " + texto + "!");
+        }).catch(function(err) {
+            console.error('Error al copiar: ', err);
+        });
+    }    
     </script>
 </body>
 </html>
