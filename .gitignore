@@ -1,0 +1,15 @@
+# Entornos virtuales
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Base de datos local (¡Muy importante no subirla para no sobreescribir la de producción luego!)
+db.sqlite3
+
+# Archivos multimedia subidos localmente
+media/
+
+.env

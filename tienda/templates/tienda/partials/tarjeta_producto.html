@@ -1,0 +1,41 @@
+<article class="product">
+    <div class="product-art">
+        <!-- Etiquetas de Promoción, Popular o Porcentaje de Descuento -->
+        {% if etiqueta %}
+            <span class="pill {% if etiqueta == 'Promoción' %}promo{% endif %}">{{ etiqueta }}</span>
+        {% elif producto.en_promocion and producto.descuento_porcentaje > 0 %}
+            <span class="pill promo">-{{ producto.descuento_porcentaje }}%</span>
+        {% endif %}
+
+        <!-- Imagen del producto -->
+        {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" loading="lazy">
+        {% else %}
+            <div class="placeholder">
+                <b>SX</b>
+                <small>Sin imagen</small>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="product-body">
+        <p class="product-type">{{ producto.categoria.nombre }}</p>
+        <h3>{{ producto.nombre }}</h3>
+        <p class="product-desc">{{ producto.descripcion|truncatechars:60 }}</p>
+
+        <div class="product-bottom">
+            <div>
+                <span class="price">${{ producto.precio|floatformat:2 }}</span>
+                <span class="currency">MXN</span>
+            </div>
+
+            <!-- Botón de agregar con tu nuevo icono SVG -->
+            <a href="{% url 'agregar_al_carrito' producto.id %}" class="add-button" aria-label="Agregar {{ producto.nombre }} a la cesta">
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-bag"></use>
+                </svg>
+                Agregar
+            </a>
+        </div>
+    </div>
+</article>

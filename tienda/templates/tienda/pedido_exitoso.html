@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171d17">
+    <title>¡Pedido Confirmado! | SupleX</title>
+    <style>
+        :root { --bg:#f7f8f4; --ink:#181c18; --muted:#656d63; --line:#e0e4db; --lime:#c6f35a; --dark:#171d17; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; -webkit-font-smoothing:antialiased; display: flex; flex-direction: column; min-height: 100vh; }
+        a { color:inherit; text-decoration:none; }
+        
+        .header { border-bottom:1px solid var(--line); background: rgba(247, 248, 244, 0.97); }
+        .nav { min-height:88px; display:flex; align-items:center; justify-content:center; }
+        .logo { font-size:34px; font-weight:900; letter-spacing:-2px; }
+        .logo b { color:#709624; }
+        
+        .success-container { width: min(600px, calc(100% - 32px)); margin: 60px auto; padding: 45px 40px; background: white; border: 1px solid var(--line); border-radius: 24px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
+        .check-icon { display: inline-grid; place-items: center; width: 80px; height: 80px; background: var(--lime); border-radius: 50%; color: var(--ink); font-size: 40px; margin: 0 auto 20px; }
+        
+        h1 { margin: 0 0 10px; font-size: 32px; letter-spacing: -1px; }
+        .order-number { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 30px; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .details-box { text-align: left; background: #fafbf8; border: 1px solid var(--line); border-radius: 16px; padding: 25px; margin-bottom: 30px; }
+        .details-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .details-row:last-child { margin-bottom: 0; padding-top: 15px; border-top: 1px dashed var(--line); font-weight: 900; font-size: 18px; }
+        
+        .whatsapp-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 18px; border: 0; border-radius: 11px; background: #25D366; color: white; font-size: 15px; font-weight: 800; transition: transform 0.2s; cursor: pointer; }
+        .whatsapp-btn:hover { transform: translateY(-2px); }
+        
+        .back-link { display: inline-block; margin-top: 25px; font-size: 12px; font-weight: 700; color: var(--muted); }
+        .back-link:hover { color: var(--ink); }
+        
+        .transfer-info { background: #fff9e8; border: 1px solid #e5d7af; color: #72581f; padding: 20px; border-radius: 16px; font-size: 13px; text-align: left; margin-bottom: 25px; line-height: 1.6; }
+        
+        @media(max-width: 600px) {
+            .success-container { padding: 35px 20px; margin: 30px auto; }
+            h1 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a class="logo" href="{% url 'catalogo' %}">Suple<b>X</b></a>
+        </nav>
+    </header>
+
+    <main style="flex: 1;">
+        <div class="success-container">
+            <div class="check-icon">✓</div>
+            <h1>¡Pedido Confirmado!</h1>
+            <div class="order-number">Orden #000{{ pedido.id }}</div>
+            
+            {% if pedido.metodo_pago == 'Transferencia' %}
+            <div class="transfer-info">
+                <strong>🏦 Datos para Transferencia (SPEI)</strong><br>
+                Banco: BBVA (O tu banco)<br>
+                CLABE: 012345678901234567<br>
+                Concepto: Pedido {{ pedido.id }}<br><br>
+                <em>* Por favor, transfiere el monto exacto y envíanos el comprobante por WhatsApp.</em>
+            </div>
+            {% endif %}
+            
+            <div class="details-box">
+                <div class="details-row">
+                    <span style="color: var(--muted);">Método de pago:</span>
+                    <strong>{{ pedido.metodo_pago }}</strong>
+                </div>
+                <div class="details-row">
+                    <span style="color: var(--muted);">Envío:</span>
+                    <strong>Local (Calpulalpan)</strong>
+                </div>
+                <div class="details-row">
+                    <span style="color: var(--muted);">Total a pagar:</span>
+                    <span>${{ total|floatformat:2 }} MXN</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6;">
+                Solo falta un paso. Si la aplicación no se abre automáticamente, presiona el botón para enviarnos tu pedido por WhatsApp.
+            </p>
+            
+            <a href="{{ url_whatsapp|safe }}" target="_blank" class="whatsapp-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 5px;">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                </svg>
+                Enviar por WhatsApp
+            </a>
+            
+            <a href="{% url 'catalogo' %}" class="back-link">← Volver al catálogo</a>
+        </div>
+    </main>
+    
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                window.open("{{ url_whatsapp|safe }}", "_blank");
+            }, 1500); 
+        };
+    </script>
+</body>
+</html>

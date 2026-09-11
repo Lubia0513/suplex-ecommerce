@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171d17">
+    <title>Panel de control | SupleX</title>
+    <style>
+        :root { --bg:#f7f8f4; --ink:#181c18; --muted:#656d63; --line:#e0e4db; --lime:#c6f35a; --dark:#171d17; --green:#426327; --red:#a53c32; }
+        * { box-sizing:border-box; }
+        html { scroll-behavior:smooth; scroll-padding-top:24px; }
+        body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; -webkit-font-smoothing:antialiased; }
+        a { color:inherit; text-decoration:none; }
+        button,input,select { font:inherit; }
+        button { cursor:pointer; }
+        a,button,input,select,[tabindex] { outline-offset:4px; }
+        :focus-visible { outline:3px solid #86ae39; }
+        [hidden] { display:none!important; }
+        .icon { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+        .sidebar { position:fixed; inset:0 auto 0 0; width:230px; display:flex; flex-direction:column; padding:34px 18px 22px; background:var(--dark); color:#c2cbbd; overflow-y:auto; }
+        .brand { display:block; padding:0 14px; color:white; font-size:35px; font-weight:900; letter-spacing:-2px; }
+        .brand b { color:var(--lime); }
+        .brand-note { margin:9px 14px 39px; font-size:9px; font-weight:700; letter-spacing:2.4px; color:#9ba991; text-transform:uppercase; }
+        .nav-label { margin:0 14px 13px; font-size:9px; letter-spacing:1.8px; color:#85947a; font-weight:700; }
+        .sidebar nav { display:grid; gap:6px; }
+        .nav-link { display:flex; align-items:center; gap:12px; min-height:45px; padding:13px 14px; border-radius:10px; font-size:12px; transition:background .2s,color .2s; }
+        .nav-link:hover { color:white; background:#263023; }
+        .nav-link.active { background:var(--lime); color:var(--ink); font-weight:700; }
+        .sidebar-bottom { margin-top:auto; padding-top:30px; }
+        .sidebar-note { margin:0 14px 18px; padding-top:20px; border-top:1px solid #35412e; color:#99a58f; font-size:10px; line-height:1.8; }
+        .logout { color:#e5b5aa; }
+        .main { margin-left:230px; padding:0 38px 28px; max-width:1840px; }
+        .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:24px 0; border-bottom:1px solid var(--line); font-size:11px; color:var(--muted); }
+        .topbar strong { color:var(--ink); }
+        .topbar a { display:inline-flex; align-items:center; gap:9px; font-weight:700; color:var(--ink); }
+        .intro { display:flex; align-items:flex-end; justify-content:space-between; gap:22px; margin:33px 0 25px; }
+        .eyebrow { margin:0 0 11px; font-size:9px; font-weight:700; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+        h1 { margin:0; font-size:clamp(28px,3.1vw,42px); letter-spacing:-1.5px; line-height:1.08; }
+        .intro-copy { margin:12px 0 0; font-size:12px; color:var(--muted); line-height:1.7; }
+        .period-form { flex:none; }
+        .period-form label { display:block; margin-bottom:8px; font-size:10px; color:var(--muted); }
+        .period-controls { display:flex; gap:7px; }
+        select,input[type="search"] { min-height:43px; border:1px solid var(--line); border-radius:9px; background:white; color:var(--ink); padding:10px 12px; font-size:12px; }
+        select { cursor:pointer; }
+        .button { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px; border:1px solid var(--line); border-radius:9px; color:var(--ink); background:white; font-size:11px; font-weight:700; white-space:nowrap; transition:background .2s; }
+        .button:hover { background:#edf3e5; }
+        .button.primary { background:var(--lime); border-color:var(--lime); }
+        .button.primary:hover { background:#d4ff79; }
+        .metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:17px; margin-bottom:26px; }
+        .metric { padding:23px; background:white; border:1px solid var(--line); border-radius:18px; min-width:0; }
+        .metric-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:24px; }
+        .metric-title { margin:0; font-size:11px; color:var(--muted); font-weight:700; }
+        .metric-icon { display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:#f0f4e9; color:#617d37; flex:none; }
+        .metric-value { display:block; font-size:clamp(25px,2.6vw,37px); line-height:1.15; font-weight:800; letter-spacing:-1.3px; overflow-wrap:anywhere; }
+        .metric-note { margin:12px 0 0; color:var(--muted); font-size:10px; line-height:1.7; }
+        .metric.featured { background:var(--dark); border-color:var(--dark); color:var(--lime); }
+        .featured .metric-title { color:#d2ddc9; }
+        .featured .metric-note { color:#b2c09e; }
+        .featured .metric-icon { background:#34442b; color:var(--lime); }
+        .metric.alerted .metric-icon { background:#fbede9; color:var(--red); }
+        .metric.alerted .metric-value { color:var(--red); }
+        .metric-link { display:inline-block; margin-top:12px; color:var(--red); font-size:10px; font-weight:700; }
+        .panels { display:grid; grid-template-columns:1fr 1fr; gap:23px; margin-bottom:26px; }
+        .panel { background:white; border:1px solid var(--line); border-radius:19px; min-width:0; overflow:hidden; }
+        .panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:25px 25px 17px; }
+        h2 { margin:0; font-size:19px; line-height:1.3; letter-spacing:-.6px; }
+        .panel-subtitle { margin:7px 0 0; color:var(--muted); font-size:10px; line-height:1.7; }
+        .small-tag { display:inline-flex; align-items:center; padding:6px 9px; border-radius:99px; background:#eff4e6; color:#587235; font-size:9px; font-weight:700; white-space:nowrap; }
+        .small-tag.warning { background:#fcf0e7; color:#925421; }
+        .rank-list,.stock-list { list-style:none; padding:0 25px 8px; margin:0; }
+        .rank-item,.stock-item { display:flex; align-items:center; justify-content:space-between; gap:13px; padding:17px 0; border-top:1px solid var(--line); }
+        .rank-product { display:flex; align-items:center; gap:13px; min-width:0; }
+        .rank { width:30px; height:30px; flex:none; display:grid; place-items:center; border-radius:9px; background:#f1f4eb; color:#71835e; font-size:11px; font-weight:700; }
+        .rank-item:first-child .rank { background:var(--lime); color:var(--ink); }
+        .product-name { margin:0; font-size:12px; font-weight:700; line-height:1.5; overflow-wrap:anywhere; }
+        .units { font-size:13px; font-weight:800; white-space:nowrap; text-align:right; }
+        .units small { display:block; margin-top:4px; font-size:9px; font-weight:400; color:var(--muted); }
+        .stock-item .product-name { font-weight:500; }
+        .badge { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:6px 9px; border-radius:99px; font-size:10px; font-weight:700; white-space:nowrap; }
+        .badge.low { background:#fcf0e7; color:#945323; }
+        .badge.out { background:#fbece9; color:#a03830; }
+        .badge.ok { background:#eef5e7; color:#476c2b; }
+        .badge.neutral { background:#f0f1ee; color:#6c7463; }
+        .dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+        .empty { padding:26px 0 30px; font-size:12px; line-height:1.8; color:var(--muted); }
+        .empty strong { display:block; margin-bottom:5px; font-size:13px; color:var(--ink); }
+        .inventory-head { align-items:center; }
+        .inventory-actions { display:flex; flex-wrap:wrap; gap:8px; }
+        .toolbar { display:flex; align-items:flex-end; gap:12px; padding:5px 25px 21px; }
+        .control { min-width:0; }
+        .control label { display:block; margin-bottom:7px; font-size:10px; color:var(--muted); }
+        .control.search { flex:1; }
+        .control input { width:100%; }
+        .control select { width:100%; }
+        .table-region { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:12px; text-align:left; }
+        caption { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); }
+        th { background:#f3f5ef; font-size:9px; font-weight:700; letter-spacing:.6px; color:#657058; text-transform:uppercase; white-space:nowrap; }
+        th,td { padding:16px 22px; border-bottom:1px solid var(--line); }
+        tbody tr:last-child td { border-bottom:0; }
+        tbody tr:hover { background:#fafcf7; }
+        td:first-child { min-width:180px; max-width:350px; font-weight:700; overflow-wrap:anywhere; line-height:1.6; }
+        .price-cell { font-weight:700; white-space:nowrap; }
+        .stock-value { font-size:12px; font-weight:700; }
+        .table-empty { text-align:center; padding:35px 20px; color:var(--muted); font-weight:400!important; }
+        .table-footer { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:16px 25px; border-top:1px solid var(--line); color:var(--muted); font-size:10px; line-height:1.7; }
+        .filter-note { margin:0 25px 17px; color:var(--muted); font-size:11px; line-height:1.6; }
+        .footer { display:flex; justify-content:space-between; gap:14px; padding:24px 0 0; font-size:10px; color:var(--muted); line-height:1.8; }
+        .skip-link { position:fixed; top:8px; left:8px; z-index:100; padding:12px; background:var(--lime); color:var(--ink); transform:translateY(-150%); }
+        .skip-link:focus { transform:translateY(0); }
+        @media(min-width:1840px) { .main { margin-right:auto; } }
+        @media(max-width:1250px) { .sidebar { width:208px; } .main { margin-left:208px; padding:0 25px 24px; } .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .metric-value { font-size:34px; } .intro { align-items:flex-start; } .toolbar { flex-wrap:wrap; } .control.search { flex-basis:100%; } }
+        @media(max-width:950px) { .panels { grid-template-columns:1fr; } .intro { flex-direction:column; gap:19px; } .inventory-head { align-items:flex-start; flex-direction:column; } .metric { padding:20px; } .metric-top { margin-bottom:18px; } }
+        @media(max-width:760px) {
+            .sidebar { position:static; width:100%; padding:21px 16px 16px; overflow:visible; }
+            .brand { padding:0; font-size:32px; } .brand-note { margin:5px 0 17px; font-size:8px; }
+            .nav-label,.sidebar-note { display:none; } .sidebar nav { display:flex; gap:7px; flex-wrap:wrap; }
+            .nav-link { min-height:39px; padding:10px 12px; font-size:10px; gap:7px; } .nav-link .icon { width:15px; height:15px; }
+            .sidebar-bottom { margin-top:9px; padding:0; } .sidebar-bottom .nav-link { display:inline-flex; padding:7px 12px; }
+            .main { margin:0; padding:0 16px 18px; } .topbar { padding:18px 0; font-size:10px; } .topbar .icon { width:16px; }
+            .intro { margin:26px 0 21px; } h1 { font-size:32px; } .period-form { width:100%; } .period-controls select { flex:1; }
+            .metrics { gap:12px; margin-bottom:20px; } .metric { padding:17px; border-radius:15px; } .metric-title { font-size:10px; } .metric-icon { width:27px; height:27px; }
+            .metric-value { font-size:28px; letter-spacing:-.9px; } .metric-note { font-size:9px; } .metric-top { align-items:flex-start; }
+            .panels { gap:20px; margin-bottom:20px; } .panel { border-radius:16px; } .panel-head { padding:21px 19px 16px; } h2 { font-size:18px; }
+            .rank-list,.stock-list { padding:0 19px 5px; } .toolbar { padding:4px 19px 18px; gap:10px; } .control { flex:1; }
+            select,input[type="search"] { font-size:16px; } .period-controls select { font-size:13px; } .button { padding:11px 13px; font-size:10px; }
+            .toolbar .button { min-height:43px; } th,td { padding:14px 18px; } .table-footer { padding:14px 19px; flex-direction:column; align-items:flex-start; gap:4px; }
+            .footer { flex-direction:column; gap:4px; } .filter-note { margin-left:19px; margin-right:19px; }
+        }
+        @media(max-width:380px) { .metrics { grid-template-columns:1fr; } .toolbar .control { flex-basis:100%; } .topbar { align-items:flex-start; flex-direction:column; gap:10px; } }
+        @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none!important; } }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+        <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+        <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="box" viewBox="0 0 24 24"><path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10v9M3 8l9 5 9-5M7.5 5.5l9 5V15"/></symbol>
+        <symbol id="bag" viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></symbol>
+        <symbol id="logout" viewBox="0 0 24 24"><path d="M9 4H4v16h5M9 12h12m-5-5 5 5-5 5"/></symbol>
+        <symbol id="money" viewBox="0 0 24 24"><path d="M12 2v20m5-16H9a4 4 0 0 0 0 8h6a4 4 0 0 1 0 8H6" transform="translate(0 -2) scale(1 .95)"/></symbol>
+        <symbol id="chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 15v-4m5 4V7m5 8V5"/></symbol>
+        <symbol id="alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Zm0 6v5m0 3v1"/></symbol>
+        <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    </svg>
+    
+    <aside class="sidebar" aria-label="Panel de administración">
+        <a class="brand" href="#main" aria-label="SupleX, panel de control">Suple<b>X</b></a>
+        <p class="brand-note">PANEL DE CONTROL</p>
+        <p class="nav-label">TU NEGOCIO</p>
+        
+        <nav aria-label="Navegación de administración">
+            <a class="nav-link active" href="#main" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#grid"/></svg>Resumen general</a>
+            <a class="nav-link" href="#pedidos"><svg class="icon" aria-hidden="true"><use href="#bag"/></svg>Pedidos recientes</a>
+            <a class="nav-link" href="#inventario"><svg class="icon" aria-hidden="true"><use href="#box"/></svg>Inventario</a>
+            <a class="nav-link" href="/admin/tienda/producto/add/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Agregar producto ↗</a>
+            <a class="nav-link" href="/admin/tienda/pedido/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#bag"/></svg>Gestionar pedidos ↗</a>
+            <a class="nav-link" href="{% url 'catalogo' %}"><svg class="icon" aria-hidden="true"><use href="#arrow"/></svg>Ir a la tienda</a>
+        </nav>
+        
+        <div class="sidebar-bottom">
+            <p class="sidebar-note">SupleX · Calpulalpan<br>Tu negocio. Tu siguiente nivel.</p>
+            <a class="nav-link logout" href="{% url 'logout_admin' %}"><svg class="icon" aria-hidden="true"><use href="#logout"/></svg>Cerrar sesión</a>
+        </div>
+    </aside>
+    
+    <main class="main" id="main" tabindex="-1">
+        <header class="topbar">
+            <span>Administración <span aria-hidden="true">/</span> <strong>Resumen general</strong></span>
+            <a href="{% url 'catalogo' %}">Ver mi tienda <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
+        </header>
+        
+        <div class="intro">
+            <div>
+                <p class="eyebrow">TODO BAJO CONTROL</p>
+                <h1>Tu negocio, en perspectiva.</h1>
+                <p class="intro-copy">Revisa tus ventas, identifica tus favoritos y mantén tu inventario al día.</p>
+            </div>
+            <form class="period-form" method="GET" id="filtroTiempo">
+                <label for="dias">Periodo de ventas</label>
+                <div class="period-controls">
+                    <select name="dias" id="dias">
+                        <option value="7" {% if dias_filtro|stringformat:'s' == '7' %}selected{% endif %}>Últimos 7 días</option>
+                        <option value="30" {% if dias_filtro|stringformat:'s' == '30' %}selected{% endif %}>Últimos 30 días</option>
+                        <option value="90" {% if dias_filtro|stringformat:'s' == '90' %}selected{% endif %}>Últimos 90 días</option>
+                    </select>
+                    <button class="button primary" type="submit">Aplicar</button>
+                </div>
+            </form>
+        </div>
+        
+        <section class="metrics" aria-label="Indicadores del negocio">
+            <article class="metric featured">
+                <div class="metric-top"><h2 class="metric-title">Ingresos brutos</h2><span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#money"/></svg></span></div>
+                <strong class="metric-value">${{ ingresos|default:0|floatformat:2 }}</strong>
+                <p class="metric-note">MXN · Últimos {{ dias_filtro }} días</p>
+            </article>
+            <article class="metric">
+                <div class="metric-top"><h2 class="metric-title">Ganancia estimada</h2><span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#chart"/></svg></span></div>
+                <strong class="metric-value">${{ ganancias|default:0|floatformat:2 }}</strong>
+                <p class="metric-note">MXN · Margen aproximado del 30%<br>Estimación, no utilidad contable.</p>
+            </article>
+            <article class="metric">
+                <div class="metric-top"><h2 class="metric-title">Pedidos totales</h2><span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#bag"/></svg></span></div>
+                <strong class="metric-value">{{ total_pedidos|default:0 }}</strong>
+                <p class="metric-note">Últimos {{ dias_filtro }} días</p>
+            </article>
+            <article class="metric {% if alertas_stock %}alerted{% endif %}">
+                <div class="metric-top"><h2 class="metric-title">Alertas de stock</h2><span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#alert"/></svg></span></div>
+                <strong class="metric-value">{{ alertas_stock|length }}</strong>
+                <p class="metric-note">Productos en alerta · Inventario actual</p>
+                {% if alertas_stock %}<a class="metric-link" href="#stock-critico">Revisar productos →</a>{% endif %}
+            </article>
+        </section>
+        
+        <div class="panels">
+            <section class="panel" aria-labelledby="top-title">
+                <div class="panel-head">
+                    <div><h2 id="top-title">Los más vendidos</h2><p class="panel-subtitle">Productos con más unidades vendidas en el periodo.</p></div>
+                    <span class="small-tag">{{ dias_filtro }} días</span>
+                </div>
+                <ol class="rank-list">
+                    {% for item in mas_vendidos %}
+                        <li class="rank-item">
+                            <div class="rank-product"><span class="rank" aria-hidden="true">{{ forloop.counter|stringformat:'02d' }}</span><p class="product-name">{{ item.producto__nombre }}</p></div>
+                            <span class="units">{{ item.total_vendido }}<small>unidades</small></span>
+                        </li>
+                    {% empty %}
+                        <li class="empty"><strong>Aún no hay ventas en este periodo.</strong>Prueba con otro rango para consultar tus resultados.</li>
+                    {% endfor %}
+                </ol>
+            </section>
+            
+            <section class="panel" id="stock-critico" aria-labelledby="stock-title">
+                <div class="panel-head">
+                    <div><h2 id="stock-title">Atención al inventario</h2><p class="panel-subtitle">Productos que requieren revisión para reabastecer.</p></div>
+                    <span class="small-tag {% if alertas_stock %}warning{% endif %}">{{ alertas_stock|length }} alertas</span>
+                </div>
+                <ul class="stock-list">
+                    {% for producto in alertas_stock %}
+                        <li class="stock-item">
+                            <p class="product-name">{{ producto.nombre }}</p>
+                            <span class="badge {% if producto.stock <= 0 %}out{% else %}low{% endif %}">{% if producto.stock <= 0 %}Sin existencias{% else %}Quedan {{ producto.stock }}{% endif %}</span>
+                        </li>
+                    {% empty %}
+                        <li class="empty"><strong>Sin alertas de stock.</strong>No hay productos en la lista de reabastecimiento.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+
+        <!-- SECCIÓN DE PEDIDOS RECIENTES -->
+        <section class="panel" id="pedidos" aria-labelledby="orders-title" style="margin-bottom: 26px;">
+            <div class="panel-head inventory-head">
+                <div>
+                    <h2 id="orders-title">Pedidos recientes</h2>
+                    <p class="panel-subtitle">Los últimos clientes que han comprado en SupleX.</p>
+                </div>
+                <div class="inventory-actions">
+                    <a class="button" href="/admin/tienda/pedido/" target="_blank" rel="noopener noreferrer">Ver todos los pedidos ↗</a>
+                </div>
+            </div>
+            
+            <div class="table-region" role="region" aria-label="Pedidos recientes" tabindex="0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Folio</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Pago</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos_recientes %}
+                            <tr>
+                                <td style="font-weight: 900; color: var(--lime); background: var(--dark);">#000{{ pedido.id }}</td>
+                                <td><strong style="color: var(--ink);">{{ pedido.nombre_comprador }}</strong><br><small style="color: var(--muted); font-weight: normal;">{{ pedido.colonia }}</small></td>
+                                <td style="color: var(--muted);">{{ pedido.fecha_creacion|date:"d M, H:i" }}</td>
+                                <td>{{ pedido.metodo_pago }}</td>
+                                <td>
+                                    <span class="badge {% if pedido.estado == 'Pendiente' %}low{% elif pedido.estado == 'Entregado' %}ok{% else %}neutral{% endif %}">
+                                        {{ pedido.estado }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a class="button" style="padding: 6px 12px; font-size: 10px;" href="/admin/tienda/pedido/{{ pedido.id }}/change/" target="_blank">
+                                        Gestionar →
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td class="table-empty" colspan="6">Aún no hay pedidos registrados.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE INVENTARIO -->
+        <section class="panel" id="inventario" aria-labelledby="inventory-title">
+            <div class="panel-head inventory-head">
+                <div><h2 id="inventory-title">Tu inventario, a la vista.</h2><p class="panel-subtitle">Precios, existencias y visibilidad de tus productos.</p></div>
+                <div class="inventory-actions"><a class="button" href="/admin/tienda/producto/" target="_blank" rel="noopener noreferrer">Edición avanzada ↗</a><a class="button primary" href="/admin/tienda/producto/add/" target="_blank" rel="noopener noreferrer">+ Agregar producto ↗</a></div>
+            </div>
+            
+            <div class="toolbar" id="inventory-controls" hidden>
+                <div class="control search"><label for="inventory-search">Buscar producto o categoría</label><input type="search" id="inventory-search" placeholder="Ej. creatina, proteína…" autocomplete="off" aria-controls="inventory-table"></div>
+                <div class="control"><label for="stock-filter">Existencias</label><select id="stock-filter" aria-controls="inventory-table"><option value="all">Todo el stock</option><option value="low">Stock bajo (≤ 3)</option><option value="out">Sin existencias</option><option value="ok">Más de 3 unidades</option></select></div>
+                <div class="control"><label for="visibility-filter">Visibilidad</label><select id="visibility-filter" aria-controls="inventory-table"><option value="all">Todos</option><option value="public">Públicos</option><option value="hidden">Ocultos</option></select></div>
+                <button class="button" type="button" id="clear-filters">Limpiar</button>
+            </div>
+            
+            <noscript><p class="filter-note">Puedes consultar todo el inventario. Activa JavaScript para buscar y filtrar esta tabla.</p></noscript>
+            
+            <div class="table-region" role="region" aria-label="Inventario: desplaza horizontalmente para ver todas las columnas" tabindex="0">
+                <table id="inventory-table">
+                    <caption>Inventario actual de SupleX. Stock bajo: tres unidades o menos. Los precios se muestran en MXN.</caption>
+                    <thead>
+                        <tr><th scope="col">Producto</th><th scope="col">Categoría</th><th scope="col">Precio · MXN</th><th scope="col">Stock actual</th><th scope="col">Visibilidad</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in todos_los_productos %}
+                            <tr data-product-row data-stock="{{ producto.stock }}" data-visibility="{% if producto.disponible %}public{% else %}hidden{% endif %}">
+                                <td data-name>{{ producto.nombre }}</td>
+                                <td data-category>{{ producto.categoria.nombre|default:'Sin categoría' }}</td>
+                                <td class="price-cell">${{ producto.precio|floatformat:2 }}</td>
+                                <td><span class="badge {% if producto.stock <= 0 %}out{% elif producto.stock <= 3 %}low{% else %}ok{% endif %}"><span class="stock-value">{{ producto.stock }}</span> {% if producto.stock <= 0 %}· Agotado{% elif producto.stock <= 3 %}· Bajo{% else %}· Disponible{% endif %}</span></td>
+                                <td>{% if producto.disponible %}<span class="badge ok"><span class="dot" aria-hidden="true"></span>Público</span>{% else %}<span class="badge neutral"><span class="dot" aria-hidden="true"></span>Oculto</span>{% endif %}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td class="table-empty" colspan="5">Todavía no hay productos. Agrega tu primer producto para comenzar.</td></tr>
+                        {% endfor %}
+                        <tr id="no-filter-results" hidden><td class="table-empty" colspan="5">No hay productos que coincidan. Prueba otra búsqueda o limpia los filtros.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer"><span id="inventory-count" role="status" aria-live="polite">{{ todos_los_productos|length }} productos en esta tabla</span><span>Stock bajo: ≤ 3 unidades · Moneda: MXN</span></div>
+        </section>
+        
+        <footer class="footer">
+            <span><strong>SupleX</strong> · Panel de control</span>
+            <span>El periodo se aplica a las ventas. El inventario muestra las existencias actuales.</span>
+        </footer>
+    </main>
+    
+    <script>
+        (() => {
+            "use strict";
+            const search = document.getElementById("inventory-search");
+            const stock = document.getElementById("stock-filter");
+            const visibility = document.getElementById("visibility-filter");
+            const count = document.getElementById("inventory-count");
+            const empty = document.getElementById("no-filter-results");
+            const normalize = text => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const products = Array.from(document.querySelectorAll("[data-product-row]")).map(row => {
+                const rawStock = row.dataset.stock.trim();
+                return {
+                    row,
+                    searchable: normalize(row.querySelector("[data-name]").textContent + " " + row.querySelector("[data-category]").textContent),
+                    stock: rawStock ? Number(rawStock) : NaN,
+                    visibility: row.dataset.visibility
+                };
+            });
+            function filterInventory() {
+                const query = normalize(search.value.trim());
+                let visible = 0;
+                products.forEach(product => {
+                    const matchesStock = stock.value === "all" ||
+                        (Number.isFinite(product.stock) && (
+                            (stock.value === "low" && product.stock <= 3) ||
+                            (stock.value === "out" && product.stock <= 0) ||
+                            (stock.value === "ok" && product.stock > 3)
+                        ));
+                    const matchesVisibility = visibility.value === "all" || product.visibility === visibility.value;
+                    const show = product.searchable.includes(query) && matchesStock && matchesVisibility;
+                    product.row.hidden = !show;
+                    if (show) visible += 1;
+                });
+                empty.hidden = visible > 0 || products.length === 0;
+                count.textContent = visible + " de " + products.length + " productos en esta tabla";
+            }
+            document.getElementById("inventory-controls").hidden = false;
+            search.addEventListener("input", filterInventory);
+            stock.addEventListener("change", filterInventory);
+            visibility.addEventListener("change", filterInventory);
+            document.getElementById("clear-filters").addEventListener("click", () => {
+                search.value = "";
+                stock.value = "all";
+                visibility.value = "all";
+                filterInventory();
+                search.focus();
+            });
+            search.addEventListener("keydown", event => {
+                if (event.key === "Enter") event.preventDefault();
+            });
+            filterInventory();
+        })();
+    </script>
+</body>
+</html>

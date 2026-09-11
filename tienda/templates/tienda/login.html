@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171d17">
+    <title>Acceso Administrador | SupleX</title>
+    <style>
+        :root { --bg:#f7f8f4; --ink:#181c18; --muted:#656d63; --line:#e0e4db; --lime:#c6f35a; --dark:#171d17; }
+        * { box-sizing:border-box; }
+        body { 
+            margin:0; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; 
+            display:flex; align-items:center; justify-content:center; height:100vh; -webkit-font-smoothing:antialiased;
+        }
+        .login-card { 
+            background:white; border:1px solid var(--line); border-radius:24px; padding:45px 40px; 
+            width:100%; max-width:400px; box-shadow:0 20px 40px rgba(0,0,0,0.03); text-align:center; 
+        }
+        .logo { font-size:34px; font-weight:900; letter-spacing:-2px; text-decoration:none; color:var(--ink); display:block; margin-bottom:5px; }
+        .logo b { color:#709624; }
+        h1 { font-size:14px; margin:0 0 35px; color:var(--muted); font-weight:700; letter-spacing:1px; text-transform:uppercase; }
+        
+        .field { text-align:left; margin-bottom:20px; }
+        .field label { display:block; margin-bottom:8px; font-size:12px; font-weight:700; }
+        .field input { 
+            width:100%; padding:14px; border:1px solid #dce2d4; border-radius:10px; background:#fafbf8; 
+            font-size:14px; outline-offset:4px; transition:border-color .2s; color:var(--ink); font-family:inherit;
+        }
+        .field input:focus { border-color:#87a353; outline:3px solid #c6f35a33; }
+        
+        .btn { 
+            display:block; width:100%; padding:16px; border:0; border-radius:11px; background:var(--ink); 
+            color:white; font-size:14px; font-weight:800; cursor:pointer; transition:transform .2s, background .2s; margin-top:10px; 
+        }
+        .btn:hover { transform:translateY(-2px); background:#2c332c; }
+        
+        .alert { background:#fff3f1; color:#8b302b; border:1px solid #ecc7c3; padding:15px; border-radius:10px; font-size:13px; margin-bottom:20px; text-align:left; }
+        
+        .back-link { display:inline-block; margin-top:25px; font-size:12px; font-weight:700; color:var(--muted); text-decoration:none; }
+        .back-link:hover { color:var(--ink); }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <a href="{% url 'catalogo' %}" class="logo">Suple<b>X</b></a>
+        <h1>Panel de Administración</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'login_admin' %}">
+            {% csrf_token %}
+            <div class="field">
+                <label>Usuario</label>
+                <input type="text" name="username" required autofocus>
+            </div>
+            <div class="field">
+                <label>Contraseña</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Ingresar al Panel</button>
+        </form>
+        
+        <a href="{% url 'catalogo' %}" class="back-link">← Volver a la tienda</a>
+    </div>
+</body>
+</html>

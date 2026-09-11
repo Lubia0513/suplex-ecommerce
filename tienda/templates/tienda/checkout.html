@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171d17">
+    <title>Finalizar pedido | SupleX</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        :root { --bg:#f7f8f4; --ink:#181c18; --muted:#656d63; --line:#e0e4db; --lime:#c6f35a; --dark:#171d17; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; -webkit-font-smoothing:antialiased; }
+        a { color:inherit; text-decoration:none; }
+        button,input,select,textarea { font:inherit; }
+        button { cursor:pointer; }
+        a,button,input,select,textarea { outline-offset:4px; }
+        :focus-visible { outline:3px solid #719e13; }
+        .wrap { width:min(1160px,calc(100% - 64px)); margin:auto; }
+        .announcement { padding:10px 16px; background:var(--lime); text-align:center; font-size:11px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; }
+        .header { border-bottom:1px solid var(--line); }
+        .nav { min-height:88px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+        .logo { font-size:34px; font-weight:900; letter-spacing:-2px; }
+        .logo b { color:#709624; }
+        .back { display:inline-flex; align-items:center; gap:9px; font-size:12px; font-weight:700; }
+        .back:hover { color:#59751f; }
+        .intro { padding:40px 0 28px; display:flex; align-items:center; justify-content:space-between; gap:25px; }
+        .eyebrow { margin:0 0 12px; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+        h1 { margin:0 0 12px; font-size:clamp(32px,4vw,46px); line-height:1.06; letter-spacing:-1.8px; }
+        .intro p:last-child { margin:0; color:var(--muted); font-size:13px; line-height:1.7; }
+        .steps { display:flex; list-style:none; padding:0; gap:22px; align-items:center; font-size:11px; white-space:nowrap; }
+        .steps li { display:flex; align-items:center; gap:8px; color:var(--muted); }
+        .step-dot { display:grid; place-items:center; width:27px; height:27px; border:1px solid var(--line); border-radius:50%; font-size:11px; }
+        .steps .current { color:var(--ink); font-weight:700; }
+        .current .step-dot { background:var(--ink); color:var(--lime); border-color:var(--ink); }
+        .layout { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); align-items:start; gap:28px; margin-bottom:42px; }
+        .panel { border:1px solid var(--line); border-radius:22px; background:white; overflow:hidden; }
+        .form-panel { padding:32px; }
+        .form-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:30px; }
+        .form-heading h2 { font-size:21px; letter-spacing:-.6px; margin:0; }
+        .required-note { font-size:10px; color:var(--muted); }
+        fieldset { min-width:0; margin:0 0 28px; padding:0 0 28px; border:0; border-bottom:1px solid var(--line); }
+        legend { width:100%; padding:0; margin-bottom:19px; display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; letter-spacing:-.2px; }
+        .number { display:inline-grid; place-items:center; width:28px; height:28px; border-radius:9px; background:#edf2e6; color:#526d27; font-size:11px; flex:none; }
+        .fields { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:19px 16px; }
+        .full { grid-column:1/-1; }
+        .field { min-width:0; }
+        .field > label { display:block; margin-bottom:9px; font-size:12px; font-weight:700; }
+        .optional { font-weight:400; color:var(--muted); font-size:10px; }
+        .field input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]),
+        .field select,.field textarea,.payment select {
+            display:block; width:100%; min-height:47px; padding:12px 14px; border:1px solid #dce2d4;
+            border-radius:10px; background:#fafbf8; color:var(--ink); font-size:13px; transition:border-color .2s,box-shadow .2s;
+        }
+        .field textarea { min-height:95px; resize:vertical; }
+        .field input:focus,.field select:focus,.field textarea:focus,.payment select:focus { border-color:#87a353; box-shadow:0 0 0 3px #c6f35a33; outline:none; }
+        .field input::placeholder,.field textarea::placeholder { color:#89917f; }
+        .help { margin:8px 0 0; color:var(--muted); font-size:11px; line-height:1.6; }
+        .errorlist { padding-left:18px; margin:8px 0 0; color:#9a302c; font-size:12px; line-height:1.6; }
+        .has-error input,.has-error select,.has-error textarea { border-color:#ba514a!important; }
+        .alert { padding:15px 18px; margin-bottom:20px; border:1px solid #dbe3d1; border-radius:12px; font-size:13px; line-height:1.6; background:#f0f4ea; }
+        .alert.error { border-color:#ecc7c3; background:#fff3f1; color:#8b302b; }
+        .alert.success { border-color:#c6dbb5; background:#eff7e8; color:#3f6228; }
+        .alert.warning { border-color:#e5d7af; background:#fff9e8; color:#72581f; }
+        .alert ul { margin:7px 0 0; padding-left:18px; }
+        .map-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:15px; }
+        .map-toolbar p { margin:0; font-size:12px; color:var(--muted); line-height:1.7; }
+        .secondary-button { flex:none; border:1px solid #dce2d4; border-radius:9px; padding:11px 14px; background:white; color:var(--ink); font-size:11px; font-weight:700; }
+        .secondary-button:hover { background:#eff3e8; }
+        #map { height:290px; z-index:1; border:1px solid var(--line); border-radius:14px; background:#edf1e7; }
+        .map-status { margin:12px 0 0; font-size:11px; line-height:1.7; color:var(--muted); }
+        .map-status[data-state="success"] { color:#486b27; }
+        .map-status[data-state="error"] { color:#9a302c; }
+        .sx-marker { background:transparent; border:0; }
+        .pin { width:28px; height:28px; display:grid; place-items:center; border:3px solid white; border-radius:50% 50% 50% 0; background:var(--ink); color:var(--lime); transform:rotate(-45deg); box-shadow:0 3px 10px #0004; }
+        .pin span { transform:rotate(45deg); font-size:11px; font-weight:900; }
+        .payment { font-size:13px; }
+        .payment ul { list-style:none; padding:0; margin:0; }
+        .payment label:has(input[type="radio"]),.payment label:has(input[type="checkbox"]) { display:flex; align-items:center; gap:10px; padding:14px; margin-bottom:9px; border:1px solid var(--line); border-radius:10px; background:#fafbf8; cursor:pointer; }
+        .payment label:has(input:checked) { background:#f0f7e4; border-color:#97b461; }
+        .payment input[type="radio"],.payment input[type="checkbox"] { accent-color:#577928; width:17px; height:17px; flex:none; }
+        .submit-button { display:flex; align-items:center; justify-content:center; gap:16px; width:100%; padding:18px; border:0; border-radius:11px; background:var(--lime); color:var(--ink); font-size:14px; font-weight:800; transition:background .2s,transform .2s; }
+        .submit-button:hover:not(:disabled) { background:#d5ff7b; transform:translateY(-2px); }
+        button:disabled { cursor:not-allowed; opacity:.6; }
+        .submit-note { text-align:center; font-size:10px; color:var(--muted); line-height:1.7; margin:12px 0 0; }
+        .summary { position:sticky; top:24px; }
+        .summary-head { padding:27px; background:var(--dark); color:white; }
+        .summary-head .eyebrow { color:#b3c39e; font-size:9px; }
+        .summary-title { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .summary-title h2 { margin:0; font-size:23px; letter-spacing:-.7px; }
+        .badge { display:grid; place-items:center; min-width:27px; height:27px; padding:0 6px; border-radius:50%; color:var(--ink); background:var(--lime); font-size:11px; font-weight:700; }
+        .summary-body { padding:0 25px 25px; }
+        .products { list-style:none; padding:0; margin:0; }
+        .product { display:flex; align-items:center; gap:12px; padding:21px 0; border-bottom:1px solid var(--line); }
+        .product-image { display:grid; place-items:center; width:61px; height:73px; flex:none; border-radius:10px; background:#f0f2eb; overflow:hidden; }
+        .product-image img { width:88%; height:88%; object-fit:contain; }
+        .product-image span { color:#8c9a7c; font-size:20px; font-weight:900; letter-spacing:-1px; }
+        .product-details { min-width:0; flex:1; }
+        .product-details h3 { margin:0 0 7px; font-size:13px; line-height:1.5; overflow-wrap:anywhere; }
+        .product-details p { margin:0; color:var(--muted); font-size:11px; }
+        .product-price { margin-top:7px; font-size:12px; font-weight:700; }
+        .totals { margin:0; }
+        .total-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:19px 0; font-size:12px; border-bottom:1px solid var(--line); }
+        .total-row dd { margin:0; font-weight:700; }
+        .free { padding:5px 9px; border-radius:99px; color:#4c6b2c; background:#edf5e2; font-size:10px; }
+        .grand-total { border:0; font-size:16px; font-weight:700; padding-bottom:8px; }
+        .grand-total dd { font-size:27px; letter-spacing:-1px; }
+        .currency-note { margin:0 0 20px; font-size:10px; color:var(--muted); }
+        .edit-cart { display:block; text-align:center; padding:13px; border:1px solid var(--line); border-radius:9px; font-size:11px; font-weight:700; }
+        .edit-cart:hover { background:#f0f4e9; }
+        .local-note { margin:17px 5px 0; font-size:11px; line-height:1.8; color:var(--muted); }
+        .local-note strong { display:block; color:var(--ink); }
+        .empty-cart { padding:25px 0; color:var(--muted); font-size:13px; line-height:1.7; }
+        footer { border-top:1px solid var(--line); padding:24px 0; color:var(--muted); font-size:11px; }
+        .footer-row { display:flex; justify-content:space-between; gap:15px; line-height:1.7; }
+        @media(max-width:950px) { .layout { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:20px; } .form-panel { padding:25px; } .steps { gap:12px; } .map-toolbar { align-items:flex-start; flex-direction:column; } }
+        @media(max-width:760px) {
+            .wrap { width:calc(100% - 32px); } .announcement { font-size:9px; letter-spacing:1px; }
+            .nav { min-height:74px; } .logo { font-size:30px; } .back { font-size:10px; }
+            .intro { align-items:flex-start; flex-direction:column; gap:17px; padding:28px 0 20px; }
+            .steps { margin:0; gap:20px; } .layout { grid-template-columns:1fr; gap:22px; }
+            .summary { position:static; } .form-panel { padding:23px 20px; } .panel { border-radius:17px; }
+            .form-heading { align-items:flex-start; flex-direction:column; gap:7px; } .form-heading h2 { font-size:20px; }
+            .fields { gap:18px 12px; } .field input:not([type="hidden"]):not([type="radio"]):not([type="checkbox"]),.field select,.field textarea,.payment select { font-size:16px; }
+            #map { height:260px; } .summary-head { padding:23px; } .footer-row { flex-direction:column; gap:5px; }
+        }
+        @media(max-width:380px) { .fields { grid-template-columns:1fr; } .grand-total dd { font-size:23px; } }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; } }
+    </style>
+</head>
+<body>
+    <div class="announcement">SupleX · Tu próxima meta empieza aquí</div>
+    <header class="header">
+        <nav class="wrap nav" aria-label="Navegación principal">
+            <a class="logo" href="{% url 'catalogo' %}" aria-label="SupleX, inicio">Suple<b>X</b></a>
+            <a class="back" href="{% url 'catalogo' %}?carrito=1">← Volver a mi cesta</a>
+        </nav>
+    </header>
+    <main class="wrap">
+        <div class="intro">
+            <div>
+                <p class="eyebrow">YA CASI ES TUYO</p>
+                <h1>Un paso más.<br>Tu próxima meta.</h1>
+                <p>Completa tus datos para preparar tu pedido en Calpulalpan.</p>
+            </div>
+            <ol class="steps" aria-label="Proceso de compra">
+                <li><span class="step-dot" aria-hidden="true">✓</span><a href="{% url 'catalogo' %}?carrito=1">Cesta</a></li>
+                <li class="current" aria-current="step"><span class="step-dot" aria-hidden="true">2</span>Datos y entrega</li>
+            </ol>
+        </div>
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}" role="status">{{ message }}</div>
+        {% endfor %}
+        <div class="layout">
+            <section class="panel form-panel" aria-labelledby="form-title">
+                <div class="form-heading">
+                    <h2 id="form-title">Detalles de tu pedido</h2>
+                    <span class="required-note">* Campos obligatorios</span>
+                </div>
+                <form id="checkout-form" method="POST" action="{% url 'checkout' %}">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert error" role="alert">
+                            <strong>Revisa los datos señalados.</strong>
+                            <div>Tu pedido todavía no se ha confirmado.</div>
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    <fieldset>
+                        <legend><span class="number">01</span>Datos personales</legend>
+                        <div class="field {% if form.nombre_comprador.errors %}has-error{% endif %}">
+                            <label for="{{ form.nombre_comprador.id_for_label }}">Nombre completo {% if form.nombre_comprador.field.required %}*{% endif %}</label>
+                            {{ form.nombre_comprador }}
+                            <div class="field-errors">{{ form.nombre_comprador.errors }}</div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend><span class="number">02</span>Dirección de entrega</legend>
+                        <div class="fields">
+                            <div class="field {% if form.calle.errors %}has-error{% endif %}">
+                                <label for="{{ form.calle.id_for_label }}">Calle {% if form.calle.field.required %}*{% endif %}</label>
+                                {{ form.calle }}
+                                <div class="field-errors">{{ form.calle.errors }}</div>
+                            </div>
+                            <div class="field {% if form.numero_exterior.errors %}has-error{% endif %}">
+                                <label for="{{ form.numero_exterior.id_for_label }}">N.º exterior {% if form.numero_exterior.field.required %}*{% endif %}</label>
+                                {{ form.numero_exterior }}
+                                <div class="field-errors">{{ form.numero_exterior.errors }}</div>
+                            </div>
+                            <div class="field {% if form.colonia.errors %}has-error{% endif %}">
+                                <label for="{{ form.colonia.id_for_label }}">Colonia {% if form.colonia.field.required %}*{% endif %}</label>
+                                {{ form.colonia }}
+                                <div class="field-errors">{{ form.colonia.errors }}</div>
+                            </div>
+                            <div class="field {% if form.codigo_postal.errors %}has-error{% endif %}">
+                                <label for="{{ form.codigo_postal.id_for_label }}">Código postal {% if form.codigo_postal.field.required %}*{% endif %}</label>
+                                {{ form.codigo_postal }}
+                                <div class="field-errors">{{ form.codigo_postal.errors }}</div>
+                            </div>
+                            <div class="field full {% if form.referencias.errors %}has-error{% endif %}">
+                                <label for="{{ form.referencias.id_for_label }}">Referencias <span class="optional">{% if form.referencias.field.required %}*{% else %}Opcional{% endif %}</span></label>
+                                {{ form.referencias }}
+                                <p class="help">Por ejemplo: color de la fachada, entre qué calles o un punto cercano.</p>
+                                <div class="field-errors">{{ form.referencias.errors }}</div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend><span class="number">03</span>Ubicación de entrega</legend>
+                        <div class="map-toolbar">
+                            <p>Marca tu domicilio en el mapa.<br>Puedes mover el pin para ajustar la ubicación.</p>
+                            <button class="secondary-button" id="locate-button" type="button" aria-controls="map">Usar mi ubicación</button>
+                        </div>
+                        <div id="map" aria-label="Mapa para seleccionar el domicilio de entrega" aria-describedby="map-status"></div>
+                        <p class="map-status" id="map-status" role="status" aria-live="polite" tabindex="-1">Selecciona un punto en el mapa o usa tu ubicación actual.</p>
+                        <div hidden>{{ form.latitud }}{{ form.longitud }}</div>
+                        {{ form.latitud.errors }}
+                        {{ form.longitud.errors }}
+                        <noscript><p class="alert error">Activa JavaScript para seleccionar tu domicilio en el mapa.</p></noscript>
+                    </fieldset>
+                    <fieldset>
+                        <legend id="payment-title"><span class="number">04</span>Método de pago</legend>
+                        <div class="payment" aria-labelledby="payment-title">
+                            {{ form.metodo_pago }}
+                            {{ form.metodo_pago.errors }}
+                        </div>
+                    </fieldset>
+                    <button class="submit-button" id="submit-order" type="submit" {% if not items %}disabled{% endif %}>
+                        Confirmar pedido <span aria-hidden="true">→</span>
+                    </button>
+                    <p class="submit-note">Revisa tu dirección y los productos del resumen antes de confirmar.</p>
+                </form>
+            </section>
+            <aside class="summary" aria-labelledby="summary-title">
+                <div class="panel">
+                    <div class="summary-head">
+                        <p class="eyebrow">ELEGIDO POR TI</p>
+                        <div class="summary-title"><h2 id="summary-title">Tu pedido</h2><span class="badge" aria-label="{{ items|length }} productos distintos">{{ items|length }}</span></div>
+                    </div>
+                    <div class="summary-body">
+                        <ul class="products">
+                            {% for item in items %}
+                                <li class="product">
+                                    <div class="product-image">
+                                        {% if item.imagen_url %}<img src="{{ item.imagen_url }}" alt="{{ item.nombre }}" loading="lazy">{% else %}<span>SX</span>{% endif %}
+                                    </div>
+                                    <div class="product-details">
+                                        <h3>{{ item.nombre }}</h3>
+                                        <p>Cantidad: {{ item.cantidad }}</p>
+                                        <div class="product-price">Precio: ${{ item.precio|floatformat:2 }} MXN</div>
+                                    </div>
+                                </li>
+                            {% empty %}
+                                <li class="empty-cart">Tu cesta está vacía. Vuelve al catálogo y elige tus productos para continuar.</li>
+                            {% endfor %}
+                        </ul>
+                        <dl class="totals">
+                            <div class="total-row"><dt>Envío local</dt><dd class="free">Gratis</dd></div>
+                            <div class="total-row grand-total"><dt>Total del pedido</dt><dd>${{ total_pagar|floatformat:2 }}</dd></div>
+                        </dl>
+                        <p class="currency-note">Todos los importes están en pesos mexicanos (MXN).</p>
+                        <a class="edit-cart" href="{% url 'catalogo' %}?carrito=1">{% if items %}Editar mi cesta{% else %}Explorar el catálogo{% endif %} →</a>
+                    </div>
+                </div>
+                <p class="local-note"><strong>De Calpulalpan, para tu próxima meta.</strong>Proteínas, creatinas y pre-entrenos en un solo lugar.</p>
+            </aside>
+        </div>
+    </main>
+    <footer><div class="wrap footer-row"><span><strong>SupleX</strong> · Calpulalpan, Tlaxcala</span><a href="{% url 'catalogo' %}">Seguir explorando el catálogo →</a></div></footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        (() => {
+            "use strict";
+            const form = document.getElementById("checkout-form");
+            const submitButton = document.getElementById("submit-order");
+            const locateButton = document.getElementById("locate-button");
+            const status = document.getElementById("map-status");
+            const latitude = document.getElementById("{{ form.latitud.id_for_label|escapejs }}");
+            const longitude = document.getElementById("{{ form.longitud.id_for_label|escapejs }}");
+            const submitInitiallyDisabled = submitButton.disabled;
+            const originalButtonHTML = submitButton.innerHTML;
+            let submitting = false;
+            let map = null;
+            let marker = null;
+            let selectionVersion = 0;
+
+            function setStatus(text, state = "") {
+                status.textContent = text;
+                status.dataset.state = state;
+            }
+
+            function readCoordinates() {
+                if (!latitude || !longitude) return null;
+                const a = latitude.value.trim().replace(",", ".");
+                const b = longitude.value.trim().replace(",", ".");
+                if (!a || !b) return null;
+                const lat = Number(a), lng = Number(b);
+                return Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? [lat, lng] : null;
+            }
+
+            function selectLocation(lat, lng) {
+                latitude.value = lat.toFixed(6);
+                longitude.value = lng.toFixed(6);
+                selectionVersion += 1;
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    marker = L.marker([lat, lng], {
+                        draggable: true,
+                        title: "Domicilio de entrega",
+                        alt: "Ubicación seleccionada",
+                        icon: L.divIcon({className:"sx-marker",html:'<div class="pin"><span>X</span></div>',iconSize:[28,36],iconAnchor:[14,34]})
+                    }).addTo(map);
+                    marker.on("dragend", () => {
+                        const position = marker.getLatLng();
+                        selectLocation(position.lat, position.lng);
+                    });
+                }
+                setStatus("Ubicación seleccionada. Comprueba que el pin coincida con tu domicilio.", "success");
+            }
+
+            // Mantener los datos devueltos por Django después de un error.
+            const saved = readCoordinates();
+            if (latitude && longitude && typeof window.L !== "undefined") {
+                map = L.map("map").setView(saved || [19.5844, -98.5669], saved ? 16 : 14);
+                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map).on("tileerror", () => {
+                    setStatus("No se pudo cargar parte del mapa. Revisa tu conexión antes de elegir el domicilio.", "error");
+                });
+                if (saved) selectLocation(saved[0], saved[1]);
+                map.on("click", event => selectLocation(event.latlng.lat, event.latlng.lng));
+                map.getContainer().addEventListener("keydown", event => {
+                    if (event.key === "Enter" && event.target === map.getContainer()) {
+                        event.preventDefault();
+                        const center = map.getCenter();
+                        selectLocation(center.lat, center.lng);
+                    }
+                });
+                map.getContainer().setAttribute("aria-label", "Mapa del domicilio: mueve con las flechas y pulsa Enter para seleccionar el centro");
+            } else {
+                locateButton.disabled = true;
+                setStatus("No se pudo iniciar el mapa. Revisa tu conexión y recarga la página.", "error");
+            }
+
+            locateButton.addEventListener("click", () => {
+                if (!map) return;
+                if (!navigator.geolocation || !window.isSecureContext) {
+                    setStatus("Tu navegador no permite obtener la ubicación aquí. Selecciona tu domicilio directamente en el mapa.", "error");
+                    return;
+                }
+                const versionAtRequest = selectionVersion;
+                locateButton.disabled = true;
+                locateButton.textContent = "Buscando ubicación…";
+                setStatus("Esperando la ubicación de tu dispositivo…");
+                const resetLocationButton = () => {
+                    locateButton.disabled = false;
+                    locateButton.textContent = "Usar mi ubicación";
+                };
+                navigator.geolocation.getCurrentPosition(position => {
+                    resetLocationButton();
+                    // No reemplazar una selección manual hecha mientras respondía el GPS.
+                    if (selectionVersion !== versionAtRequest) return;
+                    const {latitude:lat, longitude:lng} = position.coords;
+                    selectLocation(lat, lng);
+                    map.setView([lat, lng], 17);
+                }, error => {
+                    resetLocationButton();
+                    if (selectionVersion !== versionAtRequest) return;
+                    setStatus(error.code === 1
+                        ? "No diste permiso de ubicación. Puedes seleccionar tu domicilio en el mapa."
+                        : "No pudimos obtener tu ubicación. Marca tu domicilio en el mapa o vuelve a intentarlo.", "error");
+                }, {enableHighAccuracy:true, timeout:12000, maximumAge:0});
+            });
+
+            // Ayudas de autocompletado sin modificar los nombres del formulario.
+            const attributes = [
+                ["{{ form.nombre_comprador.id_for_label|escapejs }}", {autocomplete:"name"}],
+                ["{{ form.calle.id_for_label|escapejs }}", {autocomplete:"address-line1"}],
+                ["{{ form.codigo_postal.id_for_label|escapejs }}", {autocomplete:"postal-code", inputmode:"numeric"}]
+            ];
+            attributes.forEach(([id, attrs]) => {
+                const field = document.getElementById(id);
+                if (field) Object.entries(attrs).forEach(([key,value]) => field.setAttribute(key,value));
+            });
+            document.querySelectorAll(".field.has-error").forEach((field,index) => {
+                const input = field.querySelector("input,select,textarea");
+                const errors = field.querySelector(".field-errors");
+                if (!input || !errors) return;
+                errors.id = "sx-field-error-" + index;
+                input.setAttribute("aria-invalid","true");
+                const described = input.getAttribute("aria-describedby") || "";
+                input.setAttribute("aria-describedby", (described + " " + errors.id).trim());
+            });
+            const paymentSelect = document.querySelector(".payment select");
+            if (paymentSelect) paymentSelect.setAttribute("aria-labelledby","payment-title");
+
+            form.addEventListener("submit", event => {
+                if (submitting || submitInitiallyDisabled) {
+                    event.preventDefault();
+                    return;
+                }
+                if (!readCoordinates()) {
+                    event.preventDefault();
+                    setStatus("Selecciona tu domicilio en el mapa antes de confirmar el pedido.", "error");
+                    status.focus();
+                    return;
+                }
+                submitting = true;
+                submitButton.disabled = true;
+                submitButton.textContent = "Enviando pedido…";
+                // El navegador continúa con el POST y el token CSRF originales.
+            });
+            window.addEventListener("pageshow", () => {
+                submitting = false;
+                submitButton.disabled = submitInitiallyDisabled;
+                submitButton.innerHTML = originalButtonHTML;
+            });
+            document.querySelectorAll(".product-image img").forEach(image => {
+                const fallback = () => {
+                    if (!image.isConnected) return;
+                    const label = document.createElement("span");
+                    label.textContent = "SX";
+                    image.replaceWith(label);
+                };
+                image.addEventListener("error", fallback, {once:true});
+                if (image.complete && image.naturalWidth === 0) fallback();
+            });
+        })();
+    </script>
+</body>
+</html>

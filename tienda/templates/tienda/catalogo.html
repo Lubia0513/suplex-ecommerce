@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#171d17">
+
+    <meta
+        name="description"
+        content="Explora el catálogo SupleX de proteínas, creatinas y pre-entrenos en Calpulalpan. Elige tus productos y prepara tu pedido."
+    >
+
+    <title>SupleX | Suplementos en Calpulalpan</title>
+
+    <style>
+        /* ==============================
+           VARIABLES Y ESTILOS GENERALES
+        ============================== */
+
+        :root {
+            --bg: #f7f8f4;
+            --ink: #181c18;
+            --muted: #656d63;
+            --line: #e0e4db;
+            --lime: #c6f35a;
+            --dark: #171d17;
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 130px;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button,
+        a,
+        input {
+            -webkit-tap-highlight-color: transparent;
+            outline-offset: 5px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #719e13;
+        }
+
+        svg.icon {
+            width: 21px;
+            height: 21px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex: none;
+        }
+
+        .wrap {
+            width: min(1240px, calc(100% - 64px));
+            margin: auto;
+        }
+
+        /* ==============================
+           BARRA SUPERIOR Y NAVEGACIÓN
+        ============================== */
+
+        .announcement {
+            background: var(--lime);
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+        }
+
+        .nav-shell {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(247, 248, 244, 0.97);
+            border-bottom: 1px solid var(--line);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            min-height: 90px;
+        }
+
+        .logo {
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            white-space: nowrap;
+        }
+
+        .logo b {
+            color: #709624;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 390px;
+            margin-left: auto;
+            padding: 6px 7px 6px 18px;
+            background: #ecefe7;
+            border: 1px solid transparent;
+            border-radius: 99px;
+        }
+
+        .search:focus-within {
+            border-color: #819c47;
+        }
+
+        .search input {
+            width: 100%;
+            min-width: 0;
+            padding: 9px 0;
+            border: 0;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+        }
+
+        .search button {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border: 0;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .bag-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border: 0;
+            background: none;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .count {
+            display: inline-grid;
+            place-items: center;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 5px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: white;
+            font-size: 11px;
+        }
+
+        /* ==============================
+           PORTADA
+        ============================== */
+
+        .hero {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            min-height: 470px;
+            margin: 28px auto 0;
+            overflow: hidden;
+            border-radius: 24px;
+            background: var(--dark);
+            color: white;
+        }
+
+        .hero-copy {
+            z-index: 2;
+            padding: 55px 0 52px 48px;
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--lime);
+        }
+
+        .hero h1 {
+            margin: 25px 0 20px;
+            font-size: clamp(48px, 6.4vw, 86px);
+            font-weight: 900;
+            line-height: 0.97;
+            letter-spacing: -4.5px;
+        }
+
+        .hero h1 span {
+            color: var(--lime);
+        }
+
+        .hero p {
+            max-width: 330px;
+            margin-bottom: 25px;
+            color: #bfc7bb;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            padding: 16px 23px;
+            border: 0;
+            border-radius: 9px;
+            background: var(--lime);
+            color: var(--ink);
+            font-size: 12px;
+            font-weight: 800;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .button:hover {
+            background: #d5ff7b;
+            transform: translateY(-2px);
+        }
+
+        .hero-note {
+            display: block;
+            margin-top: 20px;
+            color: #9aa793;
+            font-size: 11px;
+        }
+
+        .hero-art {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            isolation: isolate;
+            min-height: 420px;
+            background: radial-gradient(
+                ellipse at 55% 52%,
+                #647b334a,
+                transparent 67%
+            );
+        }
+
+        .big-x {
+            position: absolute;
+            top: -5px;
+            right: 50px;
+            color: var(--lime);
+            font-size: 450px;
+            font-weight: 900;
+            font-style: italic;
+            line-height: 1;
+            letter-spacing: -40px;
+            opacity: 0.95;
+            transform: rotate(-10deg);
+            text-shadow: 12px 9px 0 #c6f35a12;
+        }
+
+        .orbit {
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border: 1px solid #d7e8bd24;
+            border-radius: 50%;
+            transform: rotate(-25deg) scaleX(1.2);
+        }
+
+        .orbit.two {
+            width: 450px;
+            height: 450px;
+        }
+
+        .art-tag {
+            position: absolute;
+            z-index: 2;
+            padding: 12px 18px;
+            border: 1px solid #536549;
+            border-radius: 99px;
+            background: #253023e8;
+            color: #e6efd9;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 20px #0002;
+        }
+
+        .art-tag.one {
+            top: 80px;
+            left: 15px;
+            transform: rotate(-8deg);
+        }
+
+        .art-tag.two {
+            top: 210px;
+            right: 28px;
+            transform: rotate(6deg);
+        }
+
+        .art-tag.three {
+            bottom: 85px;
+            left: 10px;
+            transform: rotate(-5deg);
+        }
+
+        .art-caption {
+            position: absolute;
+            bottom: 33px;
+            right: 35px;
+            color: #b2c29f;
+            font-size: 9px;
+            letter-spacing: 4px;
+        }
+
+        /* ==============================
+           INFORMACIÓN DEL NEGOCIO
+        ============================== */
+
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 25px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .benefit strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .benefit small {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .benefit + .benefit {
+            border-left: 1px solid var(--line);
+        }
+
+        /* ==============================
+           SECCIONES Y FILTROS
+        ============================== */
+
+        .section {
+            margin-top: 48px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .kicker {
+            margin: 0 0 10px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 31px;
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .section-head > p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .catalog-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 23px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: 1px solid var(--line);
+            border-radius: 99px;
+            background: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .filter.active {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: white;
+        }
+
+        .filter:hover {
+            border-color: #819c47;
+        }
+
+        .filter.active::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--lime);
+        }
+
+        .catalog-label {
+            color: var(--muted);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* ==============================
+           TARJETAS DE PRODUCTO
+        ============================== */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .product {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: white;
+            transition:
+                transform 0.2s,
+                border-color 0.2s,
+                box-shadow 0.2s;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            border-color: #9cb777;
+            box-shadow: 0 14px 30px #2333150b;
+        }
+
+        .product-art {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 226px;
+            overflow: hidden;
+            border-radius: 13px;
+            background: #f0f2eb;
+        }
+
+        .product:nth-child(2n) .product-art {
+            background: #f0f0eb;
+        }
+
+        .product:nth-child(3n) .product-art {
+            background: #f0ede8;
+        }
+
+        .product-art img {
+            width: 83%;
+            height: 83%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .pill {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+            z-index: 2;
+            padding: 6px 9px;
+            border-radius: 99px;
+            background: white;
+            color: #3e4c35;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .pill.promo {
+            background: var(--lime);
+        }
+
+        .product-body {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 20px 9px 9px;
+        }
+
+        .product-type {
+            margin: 0 0 9px;
+            color: var(--muted);
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .product h3 {
+            margin: 0 0 8px;
+            font-size: 17px;
+            line-height: 1.3;
+            letter-spacing: -0.4px;
+            overflow-wrap: anywhere;
+        }
+
+        .product-desc {
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+        }
+
+        .currency {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 400;
+            letter-spacing: 0.8px;
+        }
+
+        .add-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 13px 12px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--ink);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+
+        .add-button:hover {
+            background: #40532c;
+        }
+
+        .add-button .icon {
+            width: 15px;
+            height: 15px;
+        }
+
+        .placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            color: #78846e;
+        }
+
+        .placeholder b {
+            color: #acb79f;
+            font-size: 48px;
+            letter-spacing: -4px;
+        }
+
+        .placeholder small {
+            font-size: 10px;
+        }
+
+        .empty {
+            grid-column: 1 / -1;
+            padding: 45px 20px;
+            border: 1px dashed #a9b59d;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .empty p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* ==============================
+           CÓMO COMPRAR Y PIE DE PÁGINA
+        ============================== */
+
+        .local-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            margin: 48px 0;
+            padding: 35px 40px;
+            border-radius: 20px;
+            background: #e9efdf;
+        }
+
+        .local-banner h2 {
+            font-size: 27px;
+        }
+
+        .local-banner p {
+            margin-bottom: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .local-banner .button {
+            flex: none;
+            background: var(--ink);
+            color: white;
+        }
+
+        footer {
+            padding: 25px 0 35px;
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .footer-row p {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .footer-bottom {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        /* ==============================
+           CARRITO LATERAL
+        ============================== */
+
+        .basket {
+            width: 440px;
+            max-width: 100%;
+            height: 100dvh;
+            max-height: 100dvh;
+            margin: 0 0 0 auto;
+            padding: 0;
+            border: 0;
+            background: var(--bg);
+            color: var(--ink);
+        }
+
+        .basket::backdrop {
+            background: #07100788;
+            backdrop-filter: blur(3px);
+        }
+
+        .basket[open] {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .basket-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .basket-head h2 {
+            font-size: 23px;
+        }
+
+        .close {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: white;
+        }
+
+        .basket-items {
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+            padding: 20px 25px;
+        }
+
+        .basket-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .basket-thumb {
+            display: grid;
+            place-items: center;
+            width: 70px;
+            min-width: 70px;
+            height: 85px;
+            border-radius: 10px;
+            background: #e8ece2;
+            font-weight: 900;
+        }
+
+        .basket-thumb img {
+            width: 90%;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .basket-detail {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .basket-detail h3 {
+            margin: 0 0 10px;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .basket-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .basket-price {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+
+        .quantity a {
+            display: grid;
+            place-items: center;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: white;
+        }
+
+        .remove {
+            padding: 5px;
+            color: var(--muted);
+        }
+
+        .basket-summary {
+            padding: 25px;
+            border-top: 1px solid var(--line);
+        }
+
+        .basket-total {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .basket-summary p {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .basket-summary .button {
+            width: 100%;
+        }
+
+        body:has(.basket[open]) {
+            overflow: hidden;
+        }
+
+        /* ==============================
+           DISEÑO ADAPTABLE
+        ============================== */
+
+        @media (min-width: 1400px) {
+            .hero h1 {
+                font-size: 86px;
+            }
+        }
+
+        @media (max-width: 1050px) {
+            .nav-link {
+                display: none;
+            }
+
+            nav {
+                gap: 20px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .hero {
+                min-height: 455px;
+            }
+
+            .hero h1 {
+                font-size: 65px;
+            }
+
+            .hero-copy {
+                padding-left: 35px;
+            }
+
+            .big-x {
+                top: 35px;
+                right: 20px;
+                font-size: 390px;
+            }
+
+            .art-tag.one,
+            .art-tag.three {
+                left: 0;
+            }
+
+            .art-tag.two {
+                right: 10px;
+            }
+
+            .catalog-top {
+                align-items: flex-start;
+            }
+
+            .catalog-label {
+                padding-top: 13px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .wrap {
+                width: calc(100% - 32px);
+            }
+
+            .announcement {
+                font-size: 9px;
+                letter-spacing: 1px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 0;
+                min-height: 116px;
+                padding: 15px 0;
+            }
+
+            .logo {
+                font-size: 30px;
+            }
+
+            .bag-button {
+                font-size: 12px;
+            }
+
+            .search {
+                order: 3;
+                width: 100%;
+                margin-top: 12px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: 0;
+                margin-top: 16px;
+            }
+
+            .hero-copy {
+                padding: 34px 25px 30px;
+            }
+
+            .hero h1 {
+                margin-top: 23px;
+                font-size: 62px;
+                letter-spacing: -3px;
+            }
+
+            .hero p {
+                max-width: 285px;
+                font-size: 13px;
+            }
+
+            .hero-art {
+                display: none;
+            }
+
+            .hero::after {
+                content: "X";
+                position: absolute;
+                right: -25px;
+                bottom: -35px;
+                color: #c6f35a0a;
+                font-size: 260px;
+                font-weight: 900;
+                font-style: italic;
+                line-height: 1;
+                pointer-events: none;
+            }
+
+            .eyebrow {
+                font-size: 9px;
+            }
+
+            .benefits {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 20px 0;
+            }
+
+            .benefit {
+                justify-content: flex-start;
+                font-size: 11px;
+            }
+
+            .benefit + .benefit {
+                border-left: 0;
+            }
+
+            .benefit strong {
+                display: inline;
+                margin-right: 6px;
+                font-size: 11px;
+            }
+
+            .benefit small {
+                font-size: 10px;
+            }
+
+            .benefit .icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .section {
+                margin-top: 32px;
+            }
+
+            .section-head {
+                align-items: flex-start;
+            }
+
+            .section-head > p {
+                max-width: 90px;
+                font-size: 10px;
+                line-height: 1.6;
+                text-align: right;
+            }
+
+            h2 {
+                font-size: 25px;
+            }
+
+            .catalog-top {
+                display: block;
+            }
+
+            .filters {
+                gap: 6px;
+            }
+
+            .filter {
+                padding: 10px 14px;
+                font-size: 11px;
+            }
+
+            .catalog-label {
+                display: block;
+                padding-top: 14px;
+            }
+
+            .product {
+                padding: 7px;
+                border-radius: 14px;
+            }
+
+            .product-art {
+                height: 180px;
+                border-radius: 9px;
+            }
+
+            .product-body {
+                padding: 15px 5px 7px;
+            }
+
+            .product h3 {
+                font-size: 14px;
+            }
+
+            .product-desc {
+                font-size: 10px;
+            }
+
+            .product-type {
+                font-size: 8px;
+                letter-spacing: 1px;
+            }
+
+            .product-bottom {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .price {
+                font-size: 20px;
+            }
+
+            .currency {
+                display: inline;
+                margin-left: 4px;
+                font-size: 8px;
+            }
+
+            .add-button {
+                width: 100%;
+                padding: 12px;
+                font-size: 11px;
+            }
+
+            .pill {
+                top: 9px;
+                left: 9px;
+                padding: 5px 7px;
+                font-size: 8px;
+            }
+
+            .local-banner {
+                display: block;
+                margin: 32px 0;
+                padding: 25px;
+            }
+
+            .local-banner h2 {
+                font-size: 25px;
+            }
+
+            .local-banner .button {
+                margin-top: 20px;
+            }
+
+            .footer-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .footer-row p {
+                line-height: 1.8;
+            }
+
+            .kicker {
+                font-size: 9px;
+            }
+
+            .basket-head,
+            .basket-items,
+            .basket-summary {
+                padding: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Iconos SVG reutilizables -->
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        style="display: none;"
+        aria-hidden="true"
+    >
+        <symbol id="i-search" viewBox="0 0 24 24">
+            <circle cx="10.5" cy="10.5" r="6.5"></circle>
+            <path d="m16 16 5 5"></path>
+        </symbol>
+
+        <symbol id="i-bag" viewBox="0 0 24 24">
+            <path d="M5 7h14l1 14H4L5 7Z"></path>
+            <path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
+        </symbol>
+
+        <symbol id="i-arrow" viewBox="0 0 24 24">
+            <path d="M4 12h16m-6-6 6 6-6 6"></path>
+        </symbol>
+
+        <symbol id="i-pin" viewBox="0 0 24 24">
+            <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z"></path>
+            <circle cx="12" cy="10" r="2"></circle>
+        </symbol>
+
+        <symbol id="i-grid" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </symbol>
+
+        <symbol id="i-close" viewBox="0 0 24 24">
+            <path d="m6 6 12 12M18 6 6 18"></path>
+        </symbol>
+
+        <symbol id="i-trash" viewBox="0 0 24 24">
+            <path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7"></path>
+        </symbol>
+    </svg>
+
+    <!-- Barra de información -->
+    <div class="announcement">
+        SupleX · Proteínas, creatinas y pre-entrenos · Calpulalpan
+    </div>
+
+    <!-- Navegación -->
+    <header class="nav-shell">
+        <nav class="wrap" aria-label="Navegación principal">
+            <a
+                class="logo"
+                href="{% url 'catalogo' %}"
+                aria-label="SupleX, inicio"
+            >
+                Suple<b>X</b>
+            </a>
+
+            <a class="nav-link" href="#catalogo">
+                Catálogo
+            </a>
+
+            <a class="nav-link" href="#como-comprar">
+                Cómo comprar
+            </a>
+
+            <!-- Buscador conectado a Django -->
+            <form
+                class="search"
+                method="GET"
+                action="{% url 'catalogo' %}"
+            >
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-search"></use>
+                </svg>
+
+                <input
+                    aria-label="Buscar productos"
+                    type="search"
+                    name="q"
+                    placeholder="Proteína, creatina, marca..."
+                    value="{{ query|default:'' }}"
+                >
+
+                {% if categoria_actual %}
+                    <input
+                        type="hidden"
+                        name="categoria"
+                        value="{{ categoria_actual }}"
+                    >
+                {% endif %}
+
+                <button type="submit" aria-label="Buscar">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-arrow"></use>
+                    </svg>
+                </button>
+            </form>
+
+            <button
+                class="bag-button"
+                type="button"
+                data-open-cart
+                aria-haspopup="dialog"
+                aria-controls="carritoOffcanvas"
+            >
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-bag"></use>
+                </svg>
+
+                Mi cesta
+
+                <span class="count">
+                    {{ items_carrito|length }}
+                </span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="wrap">
+        <!-- Portada: solo aparece sin búsqueda ni categoría -->
+        {% if not query and not categoria_actual %}
+            <section class="hero" aria-labelledby="hero-title">
+                <div class="hero-copy">
+                    <div class="eyebrow">
+                        <span class="dot"></span>
+                        TU ESFUERZO. TU RITMO. TU SIGUIENTE META.
+                    </div>
+
+                    <h1 id="hero-title">
+                        TU SIGUIENTE<br>
+                        <span>NIVEL.</span>
+                    </h1>
+
+                    <p>
+                        Haz espacio para tu próxima meta.<br>
+                        Encuentra el suplemento que va contigo.
+                    </p>
+
+                    <a class="button" href="#catalogo">
+                        Explorar suplementos
+
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#i-arrow"></use>
+                        </svg>
+                    </a>
+
+                    <span class="hero-note">
+                        Proteínas / Creatinas / Pre-entrenos
+                    </span>
+                </div>
+
+                <div class="hero-art" aria-hidden="true">
+                    <div class="orbit"></div>
+                    <div class="orbit two"></div>
+
+                    <div class="big-x">X</div>
+
+                    <span class="art-tag one">
+                        PROTEÍNAS
+                    </span>
+
+                    <span class="art-tag two">
+                        PRE-ENTRENOS
+                    </span>
+
+                    <span class="art-tag three">
+                        CREATINAS
+                    </span>
+
+                    <span class="art-caption">
+                        BUILT FOR YOUR NEXT.
+                    </span>
+                </div>
+            </section>
+
+            <div class="benefits">
+                <div class="benefit">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-pin"></use>
+                    </svg>
+
+                    <div>
+                        <strong>Somos de aquí</strong>
+                        <small>Calpulalpan, Tlaxcala</small>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-grid"></use>
+                    </svg>
+
+                    <div>
+                        <strong>Todo en un lugar</strong>
+                        <small>Encuentra tu próximo suplemento</small>
+                    </div>
+                </div>
+
+                <div class="benefit">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-bag"></use>
+                    </svg>
+
+                    <div>
+                        <strong>Compra a tu ritmo</strong>
+                        <small>Elige y revisa tu cesta</small>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Catálogo y resultados -->
+        <section
+            class="section"
+            id="catalogo"
+            aria-labelledby="catalog-title"
+        >
+            <div class="section-head">
+                <div>
+                    <p class="kicker">
+                        ELIGE TU PRÓXIMO PASO
+                    </p>
+
+                    <h2 id="catalog-title">
+                        {% if query %}
+                            Resultados para “{{ query }}”
+                        {% elif categoria_actual %}
+                            Encuentra tu suplemento
+                        {% else %}
+                            Tu meta empieza aquí.
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <p>
+                    Tu entrenamiento.<br>
+                    Tu elección.
+                </p>
+            </div>
+
+            <div class="catalog-top">
+                <div class="filters" aria-label="Filtrar por categoría">
+                    <!-- Conserva la búsqueda al quitar una categoría -->
+                    <a
+                        class="filter {% if not categoria_actual %}active{% endif %}"
+                        {% if not categoria_actual %}aria-current="page"{% endif %}
+                        href="{% url 'catalogo' %}{% if query %}?q={{ query|urlencode }}{% endif %}#catalogo"
+                    >
+                        Todos
+                    </a>
+
+                    {% for cat in categorias %}
+                        <a
+                            class="filter {% if categoria_actual|stringformat:'s' == cat.id|stringformat:'s' %}active{% endif %}"
+                            {% if categoria_actual|stringformat:'s' == cat.id|stringformat:'s' %}aria-current="page"{% endif %}
+                            href="{% url 'catalogo' %}?categoria={{ cat.id }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}#catalogo"
+                        >
+                            {{ cat.nombre }}
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <span class="catalog-label">
+                    PRECIOS EN MXN
+                </span>
+            </div>
+
+            <div class="grid">
+                {% for producto in productos %}
+                    {% include "tienda/partials/tarjeta_producto.html" with etiqueta="" %}
+                {% empty %}
+                    <div class="empty">
+                        <h3>No encontramos productos.</h3>
+
+                        <p>
+                            Prueba otra búsqueda o explora todas las categorías.
+                        </p>
+
+                        <a
+                            class="button"
+                            href="{% url 'catalogo' %}"
+                        >
+                            Ver todo el catálogo
+
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-arrow"></use>
+                            </svg>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Secciones especiales -->
+        {% if not query and not categoria_actual %}
+
+            {% if promociones %}
+                <section
+                    class="section"
+                    aria-labelledby="promos-title"
+                >
+                    <div class="section-head">
+                        <div>
+                            <p class="kicker">
+                                EXPLORA LAS PROMOCIONES
+                            </p>
+
+                            <h2 id="promos-title">
+                                Más motivos para empezar.
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        {% for producto in promociones %}
+                            {% include "tienda/partials/tarjeta_producto.html" with etiqueta="Promoción" %}
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if populares %}
+                <section
+                    class="section"
+                    aria-labelledby="populares-title"
+                >
+                    <div class="section-head">
+                        <div>
+                            <p class="kicker">
+                                LOS FAVORITOS DEL CATÁLOGO
+                            </p>
+
+                            <h2 id="populares-title">
+                                Más populares.
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        {% for producto in populares %}
+                            {% include "tienda/partials/tarjeta_producto.html" with etiqueta="Popular" %}
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+        {% endif %}
+
+        <!-- Cómo comprar -->
+        <section class="local-banner" id="como-comprar">
+            <div>
+                <p class="kicker">
+                    DE CALPULALPAN, PARA TU PRÓXIMA META
+                </p>
+
+                <h2>Tu pedido, en tres pasos.</h2>
+
+                <p>
+                    Explora el catálogo, agrega tus favoritos y revisa tu cesta.<br>
+                    Continúa para completar los datos de tu pedido.
+                </p>
+            </div>
+
+            <button
+                class="button"
+                type="button"
+                data-open-cart
+            >
+                Revisar mi cesta
+
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-arrow"></use>
+                </svg>
+            </button>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <div class="wrap">
+            <div class="footer-row">
+                <a class="logo" href="{% url 'catalogo' %}">
+                    Suple<b>X</b>
+                </a>
+
+                <p>
+                    Proteínas · Creatinas · Pre-entrenos<br>
+                    Calpulalpan, Tlaxcala · México
+                </p>
+
+                <a class="nav-link" href="#catalogo">
+                    Volver al catálogo ↑
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                SupleX · Suplementos alimenticios.
+                Consulta la presentación y las indicaciones de cada producto.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Carrito lateral -->
+    <dialog
+        class="basket"
+        id="carritoOffcanvas"
+        aria-labelledby="basket-title"
+    >
+        <div class="basket-head">
+            <h2 id="basket-title">
+                Tu cesta
+            </h2>
+
+            <button
+                class="close"
+                type="button"
+                data-close-cart
+                aria-label="Cerrar cesta"
+            >
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-close"></use>
+                </svg>
+            </button>
+        </div>
+
+        <div class="basket-items">
+            {% for item in items_carrito %}
+                <article class="basket-item">
+                    <div class="basket-thumb">
+                        {% if item.imagen_url %}
+                            <img
+                                src="{{ item.imagen_url }}"
+                                alt="{{ item.nombre }}"
+                            >
+                        {% else %}
+                            SX
+                        {% endif %}
+                    </div>
+
+                    <div class="basket-detail">
+                        <div class="basket-line">
+                            <h3>{{ item.nombre }}</h3>
+
+                            <a
+                                class="remove"
+                                href="{% url 'eliminar_del_carrito' item.producto_id %}"
+                                aria-label="Eliminar {{ item.nombre }}"
+                            >
+                                <svg class="icon" aria-hidden="true">
+                                    <use href="#i-trash"></use>
+                                </svg>
+                            </a>
+                        </div>
+
+                        <span class="basket-price">
+                            ${{ item.precio|floatformat:2 }} MXN
+                        </span>
+
+                        <div class="quantity">
+                            <a
+                                href="{% url 'restar_del_carrito' item.producto_id %}"
+                                aria-label="Restar una unidad de {{ item.nombre }}"
+                            >
+                                −
+                            </a>
+
+                            <span>
+                                {{ item.cantidad }}
+                            </span>
+
+                            <a
+                                href="{% url 'agregar_al_carrito' item.producto_id %}"
+                                aria-label="Agregar una unidad de {{ item.nombre }}"
+                            >
+                                +
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty">
+                    <h3>
+                        Tu próxima meta empieza aquí.
+                    </h3>
+
+                    <p>
+                        Aún no tienes productos en tu cesta.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button"
+                        data-close-cart
+                    >
+                        Explorar catálogo
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="basket-summary">
+            <div class="basket-total">
+                <span>Total de productos</span>
+                <span>${{ total_carrito|floatformat:2 }}</span>
+            </div>
+
+            <p>
+                Importes en MXN.
+                Revisa los detalles de tu pedido en el siguiente paso.
+            </p>
+
+            {% if items_carrito %}
+                <a
+                    href="{% url 'checkout' %}"
+                    class="button"
+                >
+                    Continuar con mi pedido
+
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-arrow"></use>
+                    </svg>
+                </a>
+            {% else %}
+                <button
+                    type="button"
+                    class="button"
+                    disabled
+                >
+                    Agrega productos para continuar
+                </button>
+            {% endif %}
+        </div>
+    </dialog>
+
+    <script>
+        (() => {
+            "use strict";
+
+            const basket = document.getElementById("carritoOffcanvas");
+
+            // Abrir el carrito.
+            document.querySelectorAll("[data-open-cart]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    if (!basket.open) {
+                        basket.showModal();
+                    }
+                });
+            });
+
+            // Cerrar el carrito.
+            document.querySelectorAll("[data-close-cart]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    basket.close();
+                });
+            });
+
+            // Cerrar al pulsar fuera del panel.
+            // La tecla Escape funciona de forma nativa con <dialog>.
+            basket.addEventListener("click", (event) => {
+                if (event.target !== basket) {
+                    return;
+                }
+
+                const bounds = basket.getBoundingClientRect();
+
+                const outside =
+                    event.clientX < bounds.left ||
+                    event.clientX > bounds.right ||
+                    event.clientY < bounds.top ||
+                    event.clientY > bounds.bottom;
+
+                if (outside) {
+                    basket.close();
+                }
+            });
+
+            // Reabrir el carrito cuando la URL contiene ?carrito.
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.has("carrito") && !basket.open) {
+                basket.showModal();
+            }
+
+            // Mostrar un respaldo cuando una imagen no se puede cargar.
+            function replaceBrokenImage(image) {
+                if (!image.isConnected) {
+                    return;
+                }
+
+                const holder = document.createElement("div");
+                holder.className = "placeholder";
+
+                const brand = document.createElement("b");
+                brand.textContent = "SX";
+
+                const caption = document.createElement("small");
+                caption.textContent = "Imagen próximamente";
+
+                holder.append(brand, caption);
+                image.replaceWith(holder);
+            }
+
+            document
+                .querySelectorAll(".product-art img, .basket-thumb img")
+                .forEach((image) => {
+                    image.addEventListener(
+                        "error",
+                        () => replaceBrokenImage(image),
+                        { once: true }
+                    );
+
+                    // También cubre imágenes cuyo error ocurrió antes
+                    // de que este script registrara el evento.
+                    if (image.complete && image.naturalWidth === 0) {
+                        replaceBrokenImage(image);
+                    }
+                });
+        })();
+    </script>
+</body>
+</html>
