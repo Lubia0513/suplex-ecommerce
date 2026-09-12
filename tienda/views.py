@@ -19,7 +19,7 @@ def redireccion_login(request):
     # Si el usuario es administrador, lo mandamos al panel
     if request.user.is_staff or request.user.is_superuser:
         return redirect(catalogo)  # Ej: 'dashboard'
-    # Si es un cliente normal, lo mandamos a su perfil
+    # Si es un cliente normal, lo mandamos a su perfils
     else:
         return redirect(panel_administrador)  # Ej: 'mi_cuenta'
 

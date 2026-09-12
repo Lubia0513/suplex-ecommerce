@@ -1312,6 +1312,28 @@
                     {{ items_carrito|length }}
                 </span>
             </button>
+            <div class="menu-usuario">
+                {% if request.user.is_authenticated %}
+                    <!-- Si el usuario YA inició sesión -->
+                    
+                    <!-- 1. Lo mandamos a la puerta giratoria para que decida si va al Admin o a su Cuenta -->
+                    <a href="{% url 'redireccion_login' %}" class="btn-perfil">Mi Perfil</a>
+                    
+                    <!-- 2. Botón para salir (Django recomienda usar un formulario POST por seguridad) -->
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-salir">Cerrar sesión</button>
+                    </form>
+
+                {% else %}
+                    <!-- Si el usuario NO ha iniciado sesión -->
+                    
+                    <a href="{% url 'login' %}" class="btn-entrar">Iniciar sesión</a>
+                    <!-- Opcional: Si tienes página de registro -->
+                    <!-- <a href="{% url 'registro' %}" class="btn-registro">Crear cuenta</a> -->
+                    
+                {% endif %}
+            </div>
         </nav>
     </header>
 
